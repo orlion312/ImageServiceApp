@@ -23,36 +23,43 @@ import java.io.FileWriter;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * the class to create the app
+ */
 public class MainActivity extends AppCompatActivity {
-    private File dcim;
-    @Override
+
+    /**
+     * the method run when the app begin
+     */
     protected void onCreate(Bundle savedInstanceState) {
         verifyPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
     /**
-     * startService function.
-     * defines what happens when user clicks the start btn.
+     * the method starts the Service
+     * when the user click the start button
      * @param view - View obj.
      */
     public void startService(View view) {
-
         Intent intent = new Intent(this, ImageService.class);
         startService(intent);
-
     }
 
     /**
-     * stopService function.
-     * defines what happens when user press the stop btn.
-     * @param view
+     * the method stops the Service
+     * when the user click the stop button
+     * @param view - View obj.
      */
     public void stopService(View  view) {
         Intent intent = new Intent(this, ImageService.class);
         stopService(intent);
     }
 
+    /**
+     * the method responsible to verify the premission to pictures
+     */
     private void verifyPermission() {
         Log.d("tag", "verifyPermission: asking user for permission");
         String permission[] = {Manifest.permission.READ_EXTERNAL_STORAGE};

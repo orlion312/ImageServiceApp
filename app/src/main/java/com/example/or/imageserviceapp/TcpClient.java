@@ -2,26 +2,41 @@ package com.example.or.imageserviceapp;
 
 import android.app.NotificationManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+/**
+ * the class is for communication between the app to the service
+ */
 class TcpClient {
     private Socket socket;
     private OutputStream outputStream;
 
+    /**
+     * the constructor of the class
+     */
     public TcpClient() {
     }
 
+    /**
+     * the method responsible for connecting to the sever
+     */
     public void connect() {
         try {
             InetAddress serverAddr = InetAddress.getByName("10.0.2.2");
-            socket = new Socket(serverAddr, 6666);
+            socket = new Socket(serverAddr, 8500);
             try {
                 outputStream = socket.getOutputStream();
             } catch (Exception e) {
@@ -33,6 +48,12 @@ class TcpClient {
 
     }
 
+    /**
+     * the method get 2 parameters, and in another thread,
+     * send the pictures and notify the user
+     * @param notificationManager - the notification to notify the user
+     * @param builder - to send the pictures
+     */
     public void startConnection(final NotificationManager notificationManager, final NotificationCompat.Builder builder) {
 
         Thread thread = new Thread(new Runnable() {
@@ -112,12 +133,20 @@ class TcpClient {
         thread.start();
     }
 
+    /**
+     * the method get the bytes from the Bitmap and return them
+     * @param bitmap - a Bitmap to get the bytes
+     * @return - an array of bytes
+     */
     private byte[] getBytesFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
         return stream.toByteArray();
     }
 
+    /**
+     * the method call when the user turm off the service
+     */
     public void closeConnection() {
         try {
             this.socket.close();
@@ -127,4 +156,3 @@ class TcpClient {
     }
 }
 
-}
